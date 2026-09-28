@@ -15,6 +15,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#f3f1ec">
 
+        {{-- PWA: installable on the home screen (public/manifest.webmanifest, public/sw.js). --}}
+        <link rel="manifest" href="/manifest.webmanifest">
+        <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+
         <title>{{ $title ? $title.' · ' : '' }}{{ config('app.name') }}</title>
 
         {{-- Extra meta tags for a single page, added with @push('meta'). --}}
