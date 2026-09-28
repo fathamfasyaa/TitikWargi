@@ -3,9 +3,7 @@
 use App\Http\Controllers\Auth\GoogleAuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::view('/', 'home')->name('home');
 
 // Login with Google. "login" is the route Laravel redirects guests to.
 Route::middleware(['guest', 'throttle:10,1'])->group(function () {
