@@ -17,6 +17,9 @@
 
         <title>{{ $title ? $title.' · ' : '' }}{{ config('app.name') }}</title>
 
+        {{-- Extra meta tags for a single page, added with @push('meta'). --}}
+        @stack('meta')
+
         @fonts
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 

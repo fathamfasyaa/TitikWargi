@@ -47,6 +47,8 @@ return [
         'severity' => 'tingkat keparahan',
         'address' => 'alamat atau patokan',
         'description' => 'keterangan',
+        'reason' => 'alasan',
+        'note' => 'catatan',
     ],
 
 ];

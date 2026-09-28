@@ -68,9 +68,9 @@ class ReportControllerTest extends TestCase
             ],
         ]));
 
-        $response->assertRedirect(route('home'))->assertSessionHas('status');
-
         $report = Report::withCoordinates()->with('photos')->sole();
+        $response->assertRedirect(route('reports.show', $report))->assertSessionHas('status');
+
         $this->assertTrue($report->user->is($user));
         $this->assertSame(ReportCategory::Pothole, $report->category);
         $this->assertSame(ReportSeverity::Severe, $report->severity);
@@ -145,6 +145,73 @@ class ReportControllerTest extends TestCase
             ->assertForbidden();
 
         $this->assertDatabaseCount('reports', 5);
+    }
+
+    public function test_guest_sees_the_report_detail(): void
+    {
+        $report = Report::factory()->create(['address' => 'Jl. Siliwangi', 'created_at' => now()->subDays(3)]);
+        $report->photos()->create(['path' => 'reports/test.jpg', 'width' => 800, 'height' => 600]);
+        $report->supporters()->attach(User::factory()->count(2)->create());
+
+        $response = $this->get(route('reports.show', $report));
+
+        $response->assertOk()
+            ->assertSee($report->category->label())
+            ->assertSee('Jl. Siliwangi')
+            ->assertSee('Sudah 3 hari')
+            ->assertSee('/storage/reports/test.jpg')
+            ->assertSeeInOrder(['Terdampak', '2', 'warga'])
+            ->assertSee('Masuk untuk mendukung')
+            ->assertSee('https://wa.me/?text=', escape: false);
+    }
+
+    public function test_user_sees_the_support_button_and_the_flag_form(): void
+    {
+        $report = Report::factory()->create();
+
+        $response = $this->actingAs(User::factory()->create())->get(route('reports.show', $report));
+
+        $response->assertOk()
+            ->assertSee('Saya juga terdampak')
+            ->assertSee('Laporkan konten ini')
+            ->assertSee(route('reports.flag', $report));
+    }
+
+    public function test_reporter_sees_their_own_report_without_support_or_flag_buttons(): void
+    {
+        $report = Report::factory()->create();
+
+        $response = $this->actingAs($report->user)->get(route('reports.show', $report));
+
+        $response->assertOk()
+            ->assertSee('Ini laporan Anda')
+            ->assertDontSee('Saya juga terdampak')
+            ->assertDontSee(route('reports.flag', $report));
+    }
+
+    public function test_hidden_report_returns_404_for_users(): void
+    {
+        $report = Report::factory()->hidden()->create();
+
+        $this->get(route('reports.show', $report))->assertNotFound();
+        $this->actingAs(User::factory()->create())->get(route('reports.show', $report))->assertNotFound();
+    }
+
+    public function test_admin_can_view_a_hidden_report(): void
+    {
+        $report = Report::factory()->hidden()->create();
+
+        $response = $this->actingAs(User::factory()->admin()->create())->get(route('reports.show', $report));
+
+        $response->assertOk()->assertSee('Laporan ini sedang disembunyikan');
+    }
+
+    public function test_deleted_report_returns_404(): void
+    {
+        $report = Report::factory()->create();
+        $report->delete();
+
+        $this->get(route('reports.show', $report))->assertNotFound();
     }
 
     /**

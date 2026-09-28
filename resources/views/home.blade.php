@@ -42,7 +42,11 @@
                 @foreach ($latestReports as $report)
                     <li class="rounded-lg border-2 border-ink/10 bg-white p-4">
                         <div class="flex flex-wrap items-center justify-between gap-2">
-                            <h3 class="text-xl font-bold">{{ $report->category->label() }}</h3>
+                            <h3 class="text-xl font-bold">
+                                <a href="{{ route('reports.show', $report) }}" class="underline decoration-accent decoration-2 underline-offset-4">
+                                    {{ $report->category->label() }}
+                                </a>
+                            </h3>
                             <x-report-status :status="$report->status" />
                         </div>
 

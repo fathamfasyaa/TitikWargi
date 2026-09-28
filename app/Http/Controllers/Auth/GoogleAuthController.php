@@ -16,9 +16,18 @@ class GoogleAuthController extends Controller
 {
     /**
      * Send the visitor to Google's sign-in page.
+     *
+     * "?back=/reports/5" brings the visitor back to that page after login.
      */
-    public function redirect(): SymfonyRedirectResponse
+    public function redirect(Request $request): SymfonyRedirectResponse
     {
+        $back = $request->string('back')->toString();
+
+        // Only paths on this site ("/..."), never "//other-site.com" or "https://...".
+        if (str_starts_with($back, '/') && ! str_starts_with($back, '//') && ! str_contains($back, '\\')) {
+            $request->session()->put('url.intended', url($back));
+        }
+
         return Socialite::driver('google')->redirect();
     }
 

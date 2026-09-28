@@ -49,6 +49,7 @@ class ReportMapController extends Controller
                 'kelurahan' => $report->kelurahan,
                 'supports_count' => $report->supporters_count,
                 'reported_ago' => $report->created_at->diffForHumans(),
+                'url' => route('reports.show', $report),
             ],
         ]);
 

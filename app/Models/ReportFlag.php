@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\FlagReason;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['reason'])]
+#[Fillable(['reason', 'note'])]
 class ReportFlag extends Model
 {
     /**
@@ -17,6 +18,7 @@ class ReportFlag extends Model
     protected function casts(): array
     {
         return [
+            'reason' => FlagReason::class,
             'resolved_at' => 'datetime',
         ];
     }

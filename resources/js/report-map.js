@@ -1,8 +1,4 @@
-import { createMap, L } from './leaflet-base';
-
-// Point styles: orange = not yet repaired, white with a blue border = repaired.
-const STYLE_UNREPAIRED = { radius: 10, color: '#ffffff', weight: 2, fillColor: '#b93a0b', fillOpacity: 1 };
-const STYLE_REPAIRED = { radius: 10, color: '#1f4fb8', weight: 3, fillColor: '#ffffff', fillOpacity: 1 };
+import { createMap, L, statusStyle } from './leaflet-base';
 
 const mapElement = document.getElementById('report-map');
 
@@ -55,9 +51,7 @@ if (mapElement) {
         for (const feature of featureCollection.features) {
             // GeoJSON is [longitude, latitude]; Leaflet wants [latitude, longitude].
             const [longitude, latitude] = feature.geometry.coordinates;
-            const style = feature.properties.status === 'repaired' ? STYLE_REPAIRED : STYLE_UNREPAIRED;
-
-            L.circleMarker([latitude, longitude], style)
+            L.circleMarker([latitude, longitude], statusStyle(feature.properties.status))
                 .bindPopup(() => buildPopup(feature.properties))
                 .addTo(reportLayer);
         }
@@ -87,6 +81,12 @@ if (mapElement) {
             element.textContent = text;
             popup.append(element);
         }
+
+        const link = document.createElement('a');
+        link.href = report.url;
+        link.textContent = 'Lihat detail';
+        link.className = 'report-popup-link';
+        popup.append(link);
 
         return popup;
     }

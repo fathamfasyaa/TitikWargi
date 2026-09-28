@@ -2,11 +2,25 @@
 
 namespace App\Policies;
 
+use App\Models\Report;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
 class ReportPolicy
 {
+    /**
+     * Everyone, including guests, can view a report. A hidden report
+     * can only be viewed by admins; others get "not found".
+     */
+    public function view(?User $user, Report $report): Response
+    {
+        if ($report->isHidden() && ! $user?->isAdmin()) {
+            return Response::denyAsNotFound();
+        }
+
+        return Response::allow();
+    }
+
     /**
      * Banned users cannot create reports, and nobody may create more than
      * the daily limit (config/titikwargi.php).
@@ -24,5 +38,23 @@ class ReportPolicy
         }
 
         return Response::allow();
+    }
+
+    /**
+     * "Saya juga terdampak": anyone except the reporter, on a visible report.
+     */
+    public function support(User $user, Report $report): bool
+    {
+        return ! $report->isHidden() && ! $report->user()->is($user);
+    }
+
+    /**
+     * "Laporkan konten ini": anyone except the reporter, once per visible report.
+     */
+    public function flag(User $user, Report $report): bool
+    {
+        return ! $report->isHidden()
+            && ! $report->user()->is($user)
+            && ! $report->flags()->whereBelongsTo($user)->exists();
     }
 }

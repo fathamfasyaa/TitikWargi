@@ -88,6 +88,19 @@ class Report extends Model
         $query->whereNull('hidden_at');
     }
 
+    public function isHidden(): bool
+    {
+        return $this->hidden_at !== null;
+    }
+
+    /**
+     * Whole days since the report was created (0 = today).
+     */
+    public function daysSinceReported(): int
+    {
+        return (int) $this->created_at->copy()->startOfDay()->diffInDays(today());
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

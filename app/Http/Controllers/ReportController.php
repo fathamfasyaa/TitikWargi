@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\FlagReason;
 use App\Enums\ReportCategory;
 use App\Enums\ReportSeverity;
 use App\Http\Requests\StoreReportRequest;
 use App\Models\Report;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -48,7 +50,7 @@ class ReportController extends Controller
         $storedPaths = [];
 
         try {
-            DB::transaction(function () use ($request, $photos, &$storedPaths) {
+            $report = DB::transaction(function () use ($request, $photos, &$storedPaths) {
                 $report = new Report($request->safe()->only(['category', 'severity', 'address', 'description']));
                 $report->location = Report::pointFromCoordinates(
                     $request->float('latitude'),
@@ -68,6 +70,8 @@ class ReportController extends Controller
                         'height' => $photo['height'],
                     ]);
                 }
+
+                return $report;
             });
         } catch (Throwable $exception) {
             // The database changes were rolled back, so remove the files too.
@@ -76,7 +80,32 @@ class ReportController extends Controller
             throw $exception;
         }
 
-        return redirect()->route('home')->with('status', 'Terima kasih! Laporan Anda sudah terkirim.');
+        return redirect()->route('reports.show', $report)
+            ->with('status', 'Terima kasih! Laporan Anda sudah terkirim.');
+    }
+
+    /**
+     * Report detail page. Guests may view it too.
+     */
+    public function show(Request $request, Report $report): View
+    {
+        Gate::authorize('view', $report);
+
+        // Load again with the coordinates, the photos and the number of supporters.
+        $report = Report::query()
+            ->withCoordinates()
+            ->withCount('supporters')
+            ->with('photos')
+            ->findOrFail($report->id);
+
+        $user = $request->user();
+
+        return view('reports.show', [
+            'report' => $report,
+            'hasSupported' => $user !== null && $report->supporters()->whereKey($user->id)->exists(),
+            'hasFlagged' => $user !== null && $report->flags()->whereBelongsTo($user)->exists(),
+            'flagReasons' => FlagReason::cases(),
+        ]);
     }
 
     /**
