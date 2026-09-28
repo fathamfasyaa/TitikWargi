@@ -1,9 +1,16 @@
 <?php
 
 use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ReportMapController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'home')->name('home');
+Route::get('/', HomeController::class)->name('home');
+
+// GeoJSON for the public map: reports inside the visible map area.
+Route::get('/map/reports', ReportMapController::class)
+    ->middleware('throttle:60,1')
+    ->name('map.reports');
 
 // Login with Google. "login" is the route Laravel redirects guests to.
 Route::middleware(['guest', 'throttle:10,1'])->group(function () {

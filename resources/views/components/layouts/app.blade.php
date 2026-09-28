@@ -19,6 +19,9 @@
 
         @fonts
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        {{-- Extra scripts for a single page, added with @push('scripts'). --}}
+        @stack('scripts')
     </head>
     <body class="flex min-h-screen flex-col bg-paper font-sans text-lg leading-relaxed text-ink antialiased">
         <header class="border-b-2 border-ink/10 bg-paper">

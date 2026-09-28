@@ -65,6 +65,21 @@ class Report extends Model
     }
 
     /**
+     * Only reports inside a map area (the visible part of the map).
+     */
+    #[Scope]
+    protected function withinBounds(Builder $query, float $south, float $west, float $north, float $east): void
+    {
+        // A rectangle in latitude-first order, because of SRID 4326 in MySQL 8.
+        $polygon = sprintf(
+            'POLYGON((%1$F %2$F, %1$F %4$F, %3$F %4$F, %3$F %2$F, %1$F %2$F))',
+            $south, $west, $north, $east,
+        );
+
+        $query->whereRaw('MBRContains(ST_GeomFromText(?, 4326), location)', [$polygon]);
+    }
+
+    /**
      * Only reports that are not hidden by a moderator.
      */
     #[Scope]

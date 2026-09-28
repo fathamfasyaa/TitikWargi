@@ -30,3 +30,23 @@
         outline-offset: 2px;
     }
 }
+
+/* Leaflet: larger, easier to read text in popups and controls. */
+.leaflet-container {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+}
+
+.report-popup {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.report-popup strong {
+    display: block;
+    font-size: 1.125rem;
+}
+
+.report-popup p {
+    margin: 0.25rem 0 0;
+}
