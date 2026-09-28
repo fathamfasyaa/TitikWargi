@@ -21,6 +21,7 @@ return [
         'numeric' => ':Attribute harus lebih besar atau sama dengan :value.',
     ],
     'image' => ':Attribute harus berupa gambar.',
+    'in' => ':Attribute yang dipilih tidak valid.',
     'max' => [
         'array' => ':Attribute maksimal :max buah.',
         'file' => ':Attribute maksimal :max kilobyte.',
@@ -49,6 +50,7 @@ return [
         'description' => 'keterangan',
         'reason' => 'alasan',
         'note' => 'catatan',
+        'duration' => 'lama blokir',
     ],
 
 ];

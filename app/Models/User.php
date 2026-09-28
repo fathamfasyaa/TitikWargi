@@ -23,6 +23,11 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
+     * A permanent ban is stored as this far-away date in "banned_until".
+     */
+    public const PERMANENT_BAN_UNTIL = '9999-12-31 23:59:59';
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -46,6 +51,11 @@ class User extends Authenticatable
     public function isBanned(): bool
     {
         return $this->banned_until !== null && $this->banned_until->isFuture();
+    }
+
+    public function isBannedPermanently(): bool
+    {
+        return $this->banned_until?->year === 9999;
     }
 
     /**

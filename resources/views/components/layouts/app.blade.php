@@ -55,6 +55,16 @@
             </div>
         </header>
 
+        @can('moderate')
+            <div class="bg-ink text-white">
+                <div class="mx-auto max-w-3xl px-4">
+                    <a href="{{ route('admin.moderation') }}" class="inline-flex min-h-11 items-center text-base font-semibold underline">
+                        Mode admin: buka halaman moderasi
+                    </a>
+                </div>
+            </div>
+        @endcan
+
         <main class="mx-auto w-full max-w-3xl flex-1 px-4 py-6">
             @if (session('error'))
                 <p role="alert" class="mb-6 rounded-lg border-2 border-accent bg-white p-4 font-medium">
