@@ -157,6 +157,13 @@
                 @enderror
             </div>
 
+            <p class="text-base">
+                Dengan mengirim laporan, Anda setuju dengan
+                <a href="{{ route('community-guidelines') }}" class="underline" target="_blank">Aturan Komunitas</a>
+                dan <a href="{{ route('privacy') }}" class="underline" target="_blank">Kebijakan Privasi</a>.
+                Foto, lokasi, dan keterangan akan tampil untuk publik. Nama Anda tidak ditampilkan.
+            </p>
+
             <x-button class="w-full">Kirim laporan</x-button>
         </form>
     @endif

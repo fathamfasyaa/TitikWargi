@@ -76,6 +76,37 @@ Buka http://localhost:8000. Tekan `Ctrl+C` untuk menghentikannya.
    php artisan user:make-admin email-anda@gmail.com
    ```
 
+## Menjalankan test
+
+Test memakai database MySQL terpisah, `titik_wargi_test`, karena SQLite tidak mendukung
+kolom lokasi (POINT). Test tidak pernah menyentuh database `titik_wargi`.
+
+```
+mysql -u root -e "CREATE DATABASE titik_wargi_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+php artisan test
+```
+
+## Checklist sebelum online (production)
+
+- `APP_ENV=production` dan `APP_DEBUG=false`.
+- Wajib HTTPS. HTTPS dibutuhkan untuk GPS, PWA, dan login Google. Set juga `SESSION_SECURE_COOKIE=true`.
+- `APP_URL` diisi domain asli. Tambahkan `https://domain-anda/auth/google/callback` di Google
+  Cloud Console, lalu publikasikan OAuth consent screen (keluar dari mode *Testing*).
+- Batas upload server minimal 32 MB (3 foto × maks 10 MB): `upload_max_filesize`,
+  `post_max_size` (PHP), dan `client_max_body_size` (Nginx).
+- Jalankan:
+
+  ```
+  composer install --no-dev --optimize-autoloader
+  npm ci && npm run build
+  php artisan migrate --force
+  php artisan storage:link
+  php artisan optimize
+  ```
+
+- Jadikan akun Anda admin: `php artisan user:make-admin email@anda.com`.
+- Lengkapi bagian bertanda `[BELUM DITENTUKAN]` di halaman Kebijakan Privasi dan Aturan Komunitas.
+
 ## Keamanan
 
 Jangan pernah commit file `.env` atau menulis password/API key di file yang ikut di-commit.

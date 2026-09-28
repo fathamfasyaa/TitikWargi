@@ -87,9 +87,14 @@
         </main>
 
         <footer class="border-t-2 border-ink/10">
-            <p class="mx-auto max-w-3xl px-4 py-6 text-base text-ink/80">
-                Dibuat oleh warga bersama Velvorfa. Tidak terafiliasi dengan pemerintah atau partai mana pun.
-            </p>
+            <div class="mx-auto max-w-3xl px-4 py-6 text-base text-ink/80">
+                <p>Dibuat oleh warga bersama Velvorfa. Tidak terafiliasi dengan pemerintah atau partai mana pun.</p>
+
+                <nav aria-label="Informasi" class="mt-2 flex flex-wrap gap-x-6">
+                    <a href="{{ route('community-guidelines') }}" class="inline-flex min-h-11 items-center underline">Aturan Komunitas</a>
+                    <a href="{{ route('privacy') }}" class="inline-flex min-h-11 items-center underline">Kebijakan Privasi</a>
+                </nav>
+            </div>
         </footer>
     </body>
 </html>

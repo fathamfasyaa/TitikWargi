@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 
+// Static pages (draft).
+Route::view('/privacy', 'pages.privacy')->name('privacy');
+Route::view('/community-guidelines', 'pages.community-guidelines')->name('community-guidelines');
+
 // GeoJSON for the public map: reports inside the visible map area.
 Route::get('/map/reports', ReportMapController::class)
     ->middleware('throttle:60,1')
