@@ -50,3 +50,15 @@
 .report-popup p {
     margin: 0.25rem 0 0;
 }
+
+/* The draggable pin on the report form. The point of the pin is the exact location. */
+.report-pin {
+    display: block;
+    width: 36px;
+    height: 36px;
+    border: 3px solid #ffffff;
+    border-radius: 50% 50% 50% 0;
+    background: var(--color-accent);
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.4);
+    transform: rotate(-45deg);
+}

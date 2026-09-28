@@ -1,8 +1,4 @@
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-
-// Center of Cianjur kota.
-const CIANJUR_CENTER = [-6.817, 107.142];
+import { createMap, L } from './leaflet-base';
 
 // Point styles: orange = not yet repaired, white with a blue border = repaired.
 const STYLE_UNREPAIRED = { radius: 10, color: '#ffffff', weight: 2, fillColor: '#b93a0b', fillOpacity: 1 };
@@ -11,12 +7,7 @@ const STYLE_REPAIRED = { radius: 10, color: '#1f4fb8', weight: 3, fillColor: '#f
 const mapElement = document.getElementById('report-map');
 
 if (mapElement) {
-    const map = L.map(mapElement).setView(CIANJUR_CENTER, 15);
-
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
-    }).addTo(map);
+    const map = createMap(mapElement);
 
     const reportLayer = L.layerGroup().addTo(map);
     let currentRequest = null;

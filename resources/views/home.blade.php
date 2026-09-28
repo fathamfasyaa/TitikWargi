@@ -9,6 +9,8 @@
         Foto kerusakan jalan di sekitar Anda, tandai lokasinya, dan dukung laporan warga lain.
     </p>
 
+    <x-button :href="route('reports.create')" class="mt-4 w-full sm:w-auto">+ Laporkan jalan rusak</x-button>
+
     <section class="mt-6" aria-labelledby="map-title">
         <h2 id="map-title" class="sr-only">Peta laporan</h2>
 

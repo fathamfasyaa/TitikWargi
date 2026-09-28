@@ -48,6 +48,17 @@ class User extends Authenticatable
         return $this->banned_until !== null && $this->banned_until->isFuture();
     }
 
+    /**
+     * Number of reports this user created today (Asia/Jakarta), including deleted ones.
+     */
+    public function reportsCreatedToday(): int
+    {
+        return $this->reports()
+            ->withTrashed()
+            ->where('created_at', '>=', today())
+            ->count();
+    }
+
     public function reports(): HasMany
     {
         return $this->hasMany(Report::class);
